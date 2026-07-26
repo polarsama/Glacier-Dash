@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,19 +9,23 @@ public class LevelGenerator : MonoBehaviour
     public GameObject groundPrefab;
 
     [Header("Generator Settings")]
-    public float groundWidth = 20f;       // Ancho exacto del prefab en X
-    public float spawnDistance = 30f;     // Distancia a la que se genera el nuevo suelo antes de llegar
-    public int initialGroundCount = 3;    // Tramos iniciales al arrancar
+    public float groundWidth = 20f;
+    public int totalPoolSize = 3; // Solo existiran 3 suelos en TODO el juego
 
+    private List<GameObject> groundPool = new List<GameObject>();
+    private int oldestGroundIndex = 0;
     private float nextSpawnX = 0f;
-    private List<GameObject> activeGrounds = new List<GameObject>();
 
     void Start()
     {
-        // Generar los primeros tramos de suelo al iniciar el juego
-        for (int i = 0; i < initialGroundCount; i++)
+        // Creamos únicamente la cantidad exacta de suelos que necesitamos para llenar la pantalla
+        for (int i = 0; i < totalPoolSize; i++)
         {
-            SpawnGround();
+            Vector3 spawnPosition = new Vector3(nextSpawnX, -3f, 0f);
+            GameObject newGround = Instantiate(groundPrefab, spawnPosition, Quaternion.identity);
+            groundPool.Add(newGround);
+
+            nextSpawnX += groundWidth;
         }
     }
 
@@ -28,33 +33,23 @@ public class LevelGenerator : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // Si el jugador se aproxima al final del ultimo suelo generado, creamos otro
-        if (playerTransform.position.x + spawnDistance > nextSpawnX)
+        // Cuando el jugador sobrepasa el punto medio del suelo mas antiguo, movemos ese suelo al frente
+        float triggerDistance = groundPool[oldestGroundIndex].transform.position.x + groundWidth;
+
+        if (playerTransform.position.x > triggerDistance)
         {
-            SpawnGround();
-            DestroyOldGround();
+            RelocateOldestGround();
         }
     }
 
-    void SpawnGround()
+    void RelocateOldestGround()
     {
-        // Instancia el prefab en la siguiente posicion X correspondiente
-        Vector3 spawnPosition = new Vector3(nextSpawnX, -3f, 0f);
-        GameObject newGround = Instantiate(groundPrefab, spawnPosition, Quaternion.identity);
-        
-        activeGrounds.Add(newGround);
+        // En lugar de Destroy e Instantiate, solo cambiamos la posicion X
+        groundPool[oldestGroundIndex].transform.position = new Vector3(nextSpawnX, -3f, 0f);
 
-        // Avanza el punto de origen para el siguiente tramo
         nextSpawnX += groundWidth;
-    }
 
-    void DestroyOldGround()
-    {
-        // Si hay mas de 3 tramos en pantalla, elimina el mas antiguo que quedo atras
-        if (activeGrounds.Count > 3)
-        {
-            Destroy(activeGrounds[0]);
-            activeGrounds.RemoveAt(0);
-        }
+        // Avanzamos el indice circularmente (0 -> 1 -> 2 -> 0)
+        oldestGroundIndex = (oldestGroundIndex + 1) % totalPoolSize;
     }
 }
