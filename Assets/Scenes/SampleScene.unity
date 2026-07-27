@@ -412,7 +412,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1588952937}
-  - component: {fileID: 1588952936}
   - component: {fileID: 1588952938}
   m_Layer: 0
   m_Name: LevelGenerator
@@ -421,24 +420,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1588952936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588952935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98c9b55d184092b4aa60f1efe2c59922, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LevelGenerator
-  playerTransform: {fileID: 881366933}
-  floorPrefab: {fileID: 0}
-  floorWidth: 20
-  totalPoolSize: 3
-  obstacleSpawnChance: 0.5
-  maxObstaclesPerFloor: 2
 --- !u!4 &1588952937
 Transform:
   m_ObjectHideFlags: 0
