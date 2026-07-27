@@ -397,9 +397,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc7649f29b4528f4a8a12964d8faafb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  baseSpeed: 8
+  currentSpeed: 0
   minSpeed: 3
-  speed: 8
+  recoveryRate: 2
   dashForce: 80
+  dashDuration: 0.3
 --- !u!1 &1588952935
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,6 +413,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1588952937}
   - component: {fileID: 1588952936}
+  - component: {fileID: 1588952938}
   m_Layer: 0
   m_Name: LevelGenerator
   m_TagString: Untagged
@@ -430,9 +434,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelGenerator
   playerTransform: {fileID: 881366933}
-  groundPrefab: {fileID: 5229166727321163417, guid: b528250539460424da4f6f0d071630c6, type: 3}
-  groundWidth: 20
+  floorPrefab: {fileID: 0}
+  floorWidth: 20
   totalPoolSize: 3
+  obstacleSpawnChance: 0.5
+  maxObstaclesPerFloor: 2
 --- !u!4 &1588952937
 Transform:
   m_ObjectHideFlags: 0
@@ -448,6 +454,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1588952938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588952935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c9b55d184092b4aa60f1efe2c59922, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelGenerator
+  playerTransform: {fileID: 881366933}
+  floorPrefab: {fileID: 5229166727321163417, guid: b528250539460424da4f6f0d071630c6, type: 3}
+  floorWidth: 20
+  totalPoolSize: 3
+  obstacleSpawnChance: 0.5
+  maxObstaclesPerFloor: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
