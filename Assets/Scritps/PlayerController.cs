@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("References")]
+    public UIManager uiManager;
+
     [Header("Speed Settings")]
     public float baseSpeed = 8f;
     public float currentSpeed;
@@ -12,46 +15,76 @@ public class PlayerController : MonoBehaviour
     [Header("Dash Settings")]
     public float dashForce = 15f;
     public float dashDuration = 0.3f; // Tiempo que dura el estado de Dash activo
-    
-    private Rigidbody2D rb;
+
     private bool isDashing = false;
+
     private float dashTimer = 0f;
+    
+    [Header("Modo Caña Settings")]
+    public float currentCanaEnergy = 0f;
+    public float maxCanaEnergy = 100f;
+    public float canaEnergyPerRock = 25f; // Energia que otorga romper una roca
+    public float canaDuration = 5f;       // Duracion del Modo Caña activo
+    private bool isCanaActive = false;
+    private float canaTimer = 0f;
+
+    private Rigidbody2D rb;
+    private float score = 0f;
+    private float startX;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         currentSpeed = baseSpeed;
+        startX = transform.position.x; // Establecemos el punto de inicio
     }
 
     void Update()
     {
-        // 1. Manejo del tiempo del Dash
+       // 1. Calculo de Puntuacion basada en distancia recorrida
+        score = transform.position.x - startX;
+
+        // 2. Manejo del tiempo del Dash
         if (isDashing)
         {
             dashTimer -= Time.deltaTime;
-            if (dashTimer <= 0f)
-            {
-                isDashing = false; // El Dash termina
-            }
+            if (dashTimer <= 0f) isDashing = false;
         }
 
-        // 2. Recuperacion progresiva de velocidad tras un choque
-        if (currentSpeed < baseSpeed)
+        // 3. Manejo del Modo Caña
+        if (isCanaActive)
         {
+            canaTimer -= Time.deltaTime;
+            if (canaTimer <= 0f)
+            {
+                DeactivateCanaMode();
+            }
+        }
+        else if (currentSpeed < baseSpeed)
+        {
+            // Recuperacion normal de velocidad solo si no esta en Modo Caña
             currentSpeed += recoveryRate * Time.deltaTime;
             currentSpeed = Mathf.Min(currentSpeed, baseSpeed);
         }
 
-        // 3. Movimiento constante con la velocidad actual
+        // Movimiento constante
         rb.linearVelocity = new Vector2(currentSpeed, rb.linearVelocity.y);
 
-        // 4. Deteccion de entrada
+        // Controles
         bool pressSpace = Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
         bool pressLeftClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
 
         if (pressSpace || pressLeftClick)
         {
             ExecuteDash();
+        }
+
+        // 4. Actualizar Interfaz de Usuario
+        if (uiManager != null)
+        {
+            uiManager.UpdateScore(score);
+            uiManager.UpdateSpeed(currentSpeed * 2.5f); // Multiplicador estetico para mostrar km/h
+            uiManager.UpdateCanaBar(isCanaActive ? canaTimer : currentCanaEnergy, isCanaActive ? canaDuration : maxCanaEnergy, isCanaActive);
         }
     }
 
@@ -62,18 +95,41 @@ public class PlayerController : MonoBehaviour
         dashTimer = dashDuration; // Activa el estado de invulnerabilidad/rompe-obstaculos durante 0.3s
     }
 
+    public void AddCanaEnergy(float amount)
+    {
+        if (isCanaActive) return;
+
+        currentCanaEnergy += amount;
+        if (currentCanaEnergy >= maxCanaEnergy)
+        {
+            ActivateCanaMode();
+        }
+    }
+
+    void ActivateCanaMode()
+    {
+        isCanaActive = true;
+        canaTimer = canaDuration;
+        currentCanaEnergy = 0f;
+        currentSpeed = baseSpeed * 1.8f; // Super velocidad
+        Debug.Log("¡MODO CAÑA ACTIVADO!");
+    }
+
+    void DeactivateCanaMode()
+    {
+        isCanaActive = false;
+        currentSpeed = baseSpeed;
+        Debug.Log("Modo Caña finalizado");
+    }
+
     public void ApplySpeedPenalty(float penaltyAmount)
     {
-        // Si esta haciendo Dash, no recibe penalizacion
-        if (isDashing) return;
+        // En Modo Caña o durante un Dash, es invulnerable
+        if (isDashing || isCanaActive) return;
 
         currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
-        Debug.Log("¡Chocaste! Velocidad reducida a: " + currentSpeed);
     }
 
-    // Permite a la roca saber si el oso viene en Dash
-    public bool IsDashing()
-    {
-        return isDashing;
-    }
+    public bool IsDashing() => isDashing;
+    public bool IsCanaActive() => isCanaActive;
 }

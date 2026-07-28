@@ -11,10 +11,10 @@ public class Obstacle : MonoBehaviour
 
         if (player != null)
         {
-            if (player.IsDashing())
+            if (player.IsDashing() || player.IsCanaActive())
             {
-                Debug.Log("¡ROCA DESTRUIDA CON DASH!");
-                // Aqui podremos agregar mas adelante un efecto visual o sonido de destruccion
+                // Rompe la roca y le da carga a la Barra de Caña
+                player.AddCanaEnergy(player.canaEnergyPerRock);
                 gameObject.SetActive(false);
             }
             else
