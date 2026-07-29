@@ -43,9 +43,8 @@ public class PlayerController : MonoBehaviour
         // Auto-asignacion del UIManager si no se arrastro manualmente
         if (uiManager == null)
         {
-            uiManager = FindFirstObjectByType<UIManager>();
-        }
-
+            uiManager = FindAnyObjectByType<UIManager>(); 
+        }       
         // Carga del record previo guardado desde el SaveSystem
         highScore = SaveSystem.LoadHighScore();
 
