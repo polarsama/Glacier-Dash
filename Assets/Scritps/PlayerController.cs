@@ -162,4 +162,10 @@ public class PlayerController : MonoBehaviour
     // Metodos publicos para consultar estados desde otros scripts
     public bool IsDashing() => isDashing;
     public bool IsCanaActive() => isCanaActive;
+
+    // Metodo publico para obtener el puntaje actual en tiempo real
+    public float GetCurrentScore()
+    {
+        return currentScore;
+    }
 }

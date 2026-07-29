@@ -1,48 +1,53 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement; // Requerido para reiniciar la escena
 
 public class UIManager : MonoBehaviour
 {
     [Header("UI Text References")]
-    public TextMeshProUGUI scoreText;      // Texto para los puntos de la partida actual
-    public TextMeshProUGUI highScoreText;  // Texto para el record maximo
-    public TextMeshProUGUI speedText;      // Texto para la velocidad actual
+    public TextMeshProUGUI scoreText;      // Texto de puntos actuales
+    public TextMeshProUGUI highScoreText;  // Texto de record historico
+    public TextMeshProUGUI speedText;      // Texto de velocidad actual
 
     [Header("Cana Mode UI References")]
-    public Slider canaBarSlider;           // Componente Slider de la barra
-    public Image canaBarFill;              // Relleno visual de la barra de caña
-    public Color normalColor = Color.yellow; // Color base de la barra
-    public Color fullColor = Color.cyan;     // Color de la barra cuando esta en Modo Caña
+    public Slider canaBarSlider;           // Slider de la barra de caña
+    public Image canaBarFill;              // Relleno de la barra
+    public Color normalColor = Color.yellow; 
+    public Color fullColor = Color.cyan;     
 
-    // Muestra la puntuacion actual en formato de puntos (PTS)
+    [Header("Game Over UI References")]
+    public GameObject gameOverPanel;       // Panel contenedor de Game Over
+    public TextMeshProUGUI finalScoreText; // Texto que muestra los puntos finales logrados
+
+    // Muestra la puntuacion actual
     public void UpdateScore(float score)
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + Mathf.FloorToInt(score).ToString();
+            scoreText.text = "PTS: " + Mathf.FloorToInt(score).ToString();
         }
     }
 
-    // Muestra el record historico guardado
+    // Muestra el record historico
     public void UpdateHighScore(int highScore)
     {
         if (highScoreText != null)
         {
-            highScoreText.text = "High Score: " + highScore.ToString();
+            highScoreText.text = "BEST: " + highScore.ToString();
         }
     }
 
-    // Muestra la velocidad convertida a formato km/h
+    // Muestra la velocidad actual
     public void UpdateSpeed(float speed)
     {
         if (speedText != null)
         {
-            speedText.text = "Speed: " + speed.ToString("F1");
+            speedText.text = "Velocidad: " + speed.ToString("F1") + " km/h";
         }
     }
 
-    // Actualiza el progreso y color de la barra del Modo Caña
+    // Actualiza la barra del Modo Caña
     public void UpdateCanaBar(float currentAmount, float maxAmount, bool isCanaActive)
     {
         if (canaBarSlider != null)
@@ -50,11 +55,33 @@ public class UIManager : MonoBehaviour
             canaBarSlider.maxValue = maxAmount;
             canaBarSlider.value = currentAmount;
 
-            // Cambia el color del Fill si el modo super velocidad esta activo
             if (canaBarFill != null)
             {
                 canaBarFill.color = isCanaActive ? fullColor : normalColor;
             }
         }
+    }
+
+    // Muestra la pantalla de Game Over y congela la partida
+    public void ShowGameOver(float finalScore)
+    {
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true); // Enciende el panel
+        }
+
+        if (finalScoreText != null)
+        {
+            finalScoreText.text = "Puntaje Final: " + Mathf.FloorToInt(finalScore).ToString() + " PTS";
+        }
+
+        Time.timeScale = 0f; // Detiene el tiempo del juego totalmente
+    }
+
+    // Metodo para reiniciar la partida (conectado al boton de reinicio)
+    public void RestartGame()
+    {
+        Time.timeScale = 1f; // Reestablece la velocidad del tiempo antes de recargar
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Recarga la escena actual
     }
 }
