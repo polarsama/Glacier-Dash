@@ -72,7 +72,7 @@ public class UIManager : MonoBehaviour
 
         if (finalScoreText != null)
         {
-            finalScoreText.text = "Puntaje Final: " + Mathf.FloorToInt(finalScore).ToString() + " PTS";
+            finalScoreText.text = "Game Over: " +"\n" + "Final Score: " + Mathf.FloorToInt(finalScore).ToString();
         }
 
         Time.timeScale = 0f; // Detiene el tiempo del juego totalmente
