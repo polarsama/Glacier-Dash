@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "PTS: " + Mathf.FloorToInt(score).ToString();
+            scoreText.text = "Score: " + Mathf.FloorToInt(score).ToString();
         }
     }
 
@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
     {
         if (highScoreText != null)
         {
-            highScoreText.text = "BEST: " + highScore.ToString();
+            highScoreText.text = "High Score: " + highScore.ToString();
         }
     }
 
@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
     {
         if (speedText != null)
         {
-            speedText.text = "Velocidad: " + speed.ToString("F1") + " km/h";
+            speedText.text = "Speed: " + speed.ToString("F1") ;
         }
     }
 
