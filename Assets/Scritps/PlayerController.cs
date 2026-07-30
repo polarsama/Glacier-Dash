@@ -33,6 +33,14 @@ public class PlayerController : MonoBehaviour
     private float currentScore = 0f;         // Contador de puntos acumulados en la partida
     private int highScore = 0;               // Valor del record guardado
 
+    [Header("Difficulty Progression Settings")]
+    public float speedIncreaseRate = 0.1f; // Cantidad de velocidad que aumenta por segundo de juego
+    public float maxBaseSpeed = 20f;       // Velocidad base máxima a la que se puede llegar
+
+
+
+
+
     private Rigidbody2D rb;
 
     void Start()
@@ -57,26 +65,33 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // 1. Acumulacion progresiva de puntos por tiempo
+            // 1. Incremento progresivo de la dificultad (Velocidad Base escala con el tiempo)
+        if (baseSpeed < maxBaseSpeed)
+        {
+            baseSpeed += speedIncreaseRate * Time.deltaTime;
+            baseSpeed = Mathf.Min(baseSpeed, maxBaseSpeed);
+        }
+
+        // 2. Acumulación progresiva de puntos por tiempo
         currentScore += pointsPerSecond * Time.deltaTime;
         int currentScoreInt = Mathf.FloorToInt(currentScore);
 
-        // 2. Verificacion y guardado automatico en tiempo real si se supera el record
+        // 3. Verificación y guardado automático de récord
         if (currentScoreInt > highScore)
         {
             highScore = currentScoreInt;
-            SaveSystem.SaveHighScore(highScore); // Se escribe en disco
+            SaveSystem.SaveHighScore(highScore);
             if (uiManager != null) uiManager.UpdateHighScore(highScore);
         }
 
-        // 3. Temporizador y estado de Dash
+        // 4. Temporizador de Dash
         if (isDashing)
         {
             dashTimer -= Time.deltaTime;
             if (dashTimer <= 0f) isDashing = false;
         }
 
-        // 4. Temporizador y estado del Modo Caña
+        // 5. Temporizador de Modo Caña y recuperación de velocidad
         if (isCanaActive)
         {
             canaTimer -= Time.deltaTime;
@@ -84,25 +99,30 @@ public class PlayerController : MonoBehaviour
         }
         else if (currentSpeed < baseSpeed)
         {
-            // Recuperacion suave de velocidad tras frenar
+            // La velocidad recupera el valor de baseSpeed (que ahora va subiendo con la dificultad)
             currentSpeed += recoveryRate * Time.deltaTime;
             currentSpeed = Mathf.Min(currentSpeed, baseSpeed);
         }
+        else if (!isDashing)
+        {
+            // Mantiene la velocidad actual sincronizada con la nueva baseSpeed alcanzada
+            currentSpeed = baseSpeed;
+        }
 
-        // Aplicacion de velocidad lineal horizontal
+        // Aplicación del movimiento horizontal
         rb.linearVelocity = new Vector2(currentSpeed, rb.linearVelocity.y);
 
-        // Controles de entrada (Espacio o Clic Izquierdo)
+        // Controles de entrada
         bool pressSpace = Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
         bool pressLeftClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
 
         if (pressSpace || pressLeftClick) ExecuteDash();
 
-        // Actualizacion frame a frame de la UI
+        // Actualización de la interfaz gráfica
         if (uiManager != null)
         {
             uiManager.UpdateScore(currentScore);
-            uiManager.UpdateSpeed(currentSpeed * 2.5f); // Factor de conversion estético a km/h
+            uiManager.UpdateSpeed(currentSpeed * 2.5f);
             uiManager.UpdateCanaBar(isCanaActive ? canaTimer : currentCanaEnergy, isCanaActive ? canaDuration : maxCanaEnergy, isCanaActive);
         }
     }

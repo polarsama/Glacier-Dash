@@ -1114,13 +1114,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881366929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!114 &881366934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1142,11 +1142,13 @@ MonoBehaviour:
   dashDuration: 0.3
   currentCanaEnergy: 0
   maxCanaEnergy: 100
-  canaEnergyPerRock: 25
-  canaDuration: 5
+  canaEnergyPerRock: 20
+  canaDuration: 7
   pointsPerSecond: 100
   rockBonusPoints: 500
   canaActivationBonus: 1000
+  speedIncreaseRate: 0.1
+  maxBaseSpeed: 20
 --- !u!1 &1040635046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1776,9 +1778,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Avalanche
   playerTransform: {fileID: 881366933}
   uiManager: {fileID: 185080329}
-  baseAvalancheSpeed: 7.5
-  maxDistanceBehind: 15
-  minDistanceBehind: 3
+  targetDistance: 12
+  baseSpeed: 5
+  maxSpeed: 35
+  catchUpFactor: 0.6
 --- !u!1 &1874872909
 GameObject:
   m_ObjectHideFlags: 0

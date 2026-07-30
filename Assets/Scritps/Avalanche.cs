@@ -3,28 +3,28 @@ using UnityEngine;
 public class Avalanche : MonoBehaviour
 {
     [Header("References")]
-    public Transform playerTransform; // Referencia a la posicion del jugador
-    public UIManager uiManager;       // Referencia al gestor de interfaz
+    public Transform playerTransform; // Posición del jugador
+    public UIManager uiManager;       // Interfaz de usuario
 
-    [Header("Movement Settings")]
-    public float baseAvalancheSpeed = 7.5f; // Velocidad base de avance de la avalancha
-    public float maxDistanceBehind = 15f;    // Distancia maxima a la que puede quedarse atras
-    public float minDistanceBehind = 3f;     // Distancia minima antes de considerarse peligro crítico
+    [Header("Rubber-banding Settings")]
+    public float targetDistance = 8f;   // Distancia ideal constante que la avalancha busca mantener tras el jugador
+    public float baseSpeed = 8f;        // Velocidad mínima de avance
+    public float maxSpeed = 25f;        // Velocidad máxima para acortar distancia cuando el oso va muy lejos
+    public float catchUpFactor = 1.5f;  // Que tan agresivamente acelera al quedar atras
 
     private float currentSpeed;
 
     void Start()
     {
-        currentSpeed = baseAvalancheSpeed;
+        currentSpeed = baseSpeed;
 
-        // Auto-asignacion del Player si no se coloco en Inspector
+        // Auto-asignación de referencias si no están configuradas
         if (playerTransform == null)
         {
             PlayerController player = FindAnyObjectByType<PlayerController>();
             if (player != null) playerTransform = player.transform;
         }
 
-        // Auto-asignacion del UIManager si no se coloco
         if (uiManager == null)
         {
             uiManager = FindAnyObjectByType<UIManager>();
@@ -35,34 +35,38 @@ public class Avalanche : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // Calculo de la distancia horizontal respecto al jugador
-        float distanceToPlayer = playerTransform.position.x - transform.position.x;
+        // 1. Calcular distancia actual entre el oso y la avalancha
+        float currentDistance = playerTransform.position.x - transform.position.x;
 
-        // Ajuste dinamico de velocidad: si el oso se aleja demasiado, la avalancha acelera para mantener la presion
-        if (distanceToPlayer > maxDistanceBehind)
+        // 2. Si el jugador está más lejos que la distancia objetivo, aumentar velocidad
+        if (currentDistance > targetDistance)
         {
-            currentSpeed = baseAvalancheSpeed * 1.3f;
+            // La velocidad escala proporcionalmente a la distancia de ventaja que lleva el jugador
+            float excessDistance = currentDistance - targetDistance;
+            currentSpeed = baseSpeed + (excessDistance * catchUpFactor);
+            currentSpeed = Mathf.Min(currentSpeed, maxSpeed); // Limitar a la velocidad máxima
         }
         else
         {
-            currentSpeed = baseAvalancheSpeed;
+            // Si el jugador se retrasa y está muy cerca de la avalancha, esta vuelve a su velocidad base
+            currentSpeed = baseSpeed;
         }
 
-        // Movimiento constante de la avalancha hacia la derecha
+        // 3. Movimiento lineal constante hacia la derecha
         transform.Translate(Vector3.right * currentSpeed * Time.deltaTime);
     }
 
-    // Detecta la colision directa con el jugador
+    // Detección de colisión para Game Over
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController player = collision.GetComponent<PlayerController>();
 
         if (player != null)
         {
-            // Si el jugador esta en Modo Caña, la avalancha no lo elimina (lo impulsa o es inmune)
+            // Inmunidad durante el Modo Caña
             if (player.IsCanaActive()) return;
 
-            // Si el jugador es alcanzado en estado normal ➔ Game Over
+            // En estado normal ➔ Detener juego y mostrar Game Over
             if (uiManager != null)
             {
                 uiManager.ShowGameOver(player.GetCurrentScore());
