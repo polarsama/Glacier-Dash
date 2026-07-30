@@ -54,6 +54,9 @@ public class Avalanche : MonoBehaviour
 
         // 3. Movimiento lineal constante hacia la derecha
         transform.Translate(Vector3.right * currentSpeed * Time.deltaTime);
+
+        // Incrementa la velocidad base de la avalancha gradualmente con el tiempo
+        baseSpeed += 0.05f * Time.deltaTime;
     }
 
     // Detección de colisión para Game Over

@@ -16,6 +16,10 @@ public class LevelGenerator : MonoBehaviour
     public float obstacleSpawnChance = 0.5f; // 50% de probabilidad de que aparezca una roca en un punto
     public int maxObstaclesPerFloor = 2;     // Para no saturar el tramo y dar tiempo a reaccionar
 
+    [Header("Dynamic Obstacle Settings")]
+    public float baseObstacleChance = 0.4f; // 40% de probabilidad al inicio
+    public float maxObstacleChance = 0.85f; // Hasta 85% de densidad en niveles altos
+
     private List<GameObject> floorPool = new List<GameObject>();
     private int oldestFloorIndex = 0;
     private float nextSpawnX = 0f;
@@ -102,6 +106,26 @@ public class LevelGenerator : MonoBehaviour
         foreach (Obstacle obs in obstacles)
         {
             obs.gameObject.SetActive(false);
+        }
+    }
+
+    // Metodo para calcular la probabilidad dinamica en base a la distancia/puntos
+    float GetCurrentObstacleChance(float currentDistance)
+    {
+        // Aumenta la probabilidad un 5% por cada 100 metros recorridos
+        float extraChance = (currentDistance / 100f) * 0.05f; 
+        return Mathf.Min(baseObstacleChance + extraChance, maxObstacleChance);
+    }
+
+    // Al momento de instanciar las rocas en cada bloque de suelo:
+    void SpawnObstaclesOnFloor(GameObject floorBlock)
+    {
+        float currentChance = GetCurrentObstacleChance(playerTransform.position.x);
+
+        // Si el numero aleatorio es menor a la probabilidad dinamica, activa la roca
+        if (Random.value <= currentChance)
+        {
+            // Activar objeto de la roca en los puntos de control del suelo 
         }
     }
 }
