@@ -47,7 +47,7 @@ public class HazardSpawner : MonoBehaviour
         Vector3 spawnPosition = new Vector3(spawnX, playerTransform.position.y + spawnHeight, 0f);
 
         // Instancia o activa el peligro
-        Instantiate(fallingIcePrefab, spawnPosition, Quaternion.identity);
+        Instantiate(fallingIcePrefab, spawnPosition, fallingIcePrefab.transform.rotation);
     }
 
     void SetNextSpawnTime()
