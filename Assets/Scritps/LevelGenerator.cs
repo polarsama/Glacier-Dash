@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,12 +14,12 @@ public class LevelGenerator : MonoBehaviour
 
     [Header("Randomization Settings")]
     [Range(0f, 1f)]
-    public float obstacleSpawnChance = 0.5f; // 50% de probabilidad de que aparezca una roca en un punto
-    public int maxObstaclesPerFloor = 2;     // Para no saturar el tramo y dar tiempo a reaccionar
+    public float obstacleSpawnChance = 0.5f; // Probabilidad base
+    public int maxObstaclesPerFloor = 2;     // Límite por tramo
 
     [Header("Dynamic Obstacle Settings")]
-    public float baseObstacleChance = 0.4f; // 40% de probabilidad al inicio
-    public float maxObstacleChance = 0.85f; // Hasta 85% de densidad en niveles altos
+    public float baseObstacleChance = 0.4f; // 40% al inicio
+    public float maxObstacleChance = 0.85f; // Hasta 85% en niveles altos
 
     private List<GameObject> floorPool = new List<GameObject>();
     private int oldestFloorIndex = 0;
@@ -31,7 +32,6 @@ public class LevelGenerator : MonoBehaviour
             Vector3 spawnPosition = new Vector3(nextSpawnX, -3f, 0f);
             GameObject newFloor = Instantiate(floorPrefab, spawnPosition, Quaternion.identity);
             
-            // Si es el primer suelo (donde aparece el oso), lo dejamos sin rocas para no chocar de entrada
             if (i == 0)
             {
                 ClearAllObstacles(newFloor);
@@ -49,11 +49,7 @@ public class LevelGenerator : MonoBehaviour
     void Update()
     {
         if (playerTransform == null) return;
-
-        // VALIDACIÓN DE SEGURIDAD: Evita el error si la lista no esta lista o esta vacia
         if (floorPool == null || floorPool.Count == 0) return;
-
-        // Aseguramos que el indice no se salga de los limites de la lista
         if (oldestFloorIndex >= floorPool.Count) return;
 
         float triggerDistance = floorPool[oldestFloorIndex].transform.position.x + floorWidth;
@@ -68,64 +64,59 @@ public class LevelGenerator : MonoBehaviour
     {
         GameObject floorToMove = floorPool[oldestFloorIndex];
 
-        // Teletransportamos el tramo de suelo a la nueva posicion X
         floorToMove.transform.position = new Vector3(nextSpawnX, -3f, 0f);
 
-        // Aleatorizamos cuales rocas se activan en esta nueva vuelta
         RandomizeObstaclesInFloor(floorToMove);
 
-        // Avanzamos X e indice circular
         nextSpawnX += floorWidth;
         oldestFloorIndex = (oldestFloorIndex + 1) % totalPoolSize;
     }
 
     void RandomizeObstaclesInFloor(GameObject floor)
+{
+    // Primero desactivamos absolutamente todas las rocas de todos los SpawnPoints
+    ClearAllObstacles(floor);
+
+    int activeCount = 0;
+    float currentChance = (playerTransform != null) ? GetCurrentObstacleChance(playerTransform.position.x) : obstacleSpawnChance;
+
+    // Buscamos cada SpawnPoint dentro del tramo de suelo
+    foreach (Transform spawnPoint in floor.transform)
     {
-        // Obtiene todos los obstaculos del tramo
-        Obstacle[] obstacles = floor.GetComponentsInChildren<Obstacle>(true);
+        // Solo procesamos los objetos que se llamen "SpawnPoint"
+        if (!spawnPoint.name.StartsWith("SpawnPoint")) continue;
 
-        int activeCount = 0;
-
-        foreach (Obstacle obs in obstacles)
+        // Comprobamos si no hemos superado el límite de rocas por tramo y si pasa la probabilidad
+        if (activeCount < maxObstaclesPerFloor && Random.value < currentChance)
         {
-            // Apagamos todas de entrada
-            obs.gameObject.SetActive(false);
+            // Obtenemos los dos tipos de rocas dentro de este SpawnPoint
+            Obstacle[] obstaclesInPoint = spawnPoint.GetComponentsInChildren<Obstacle>(true);
 
-            // Verificamos probabilidad y que no superemos el limite por tramo
-            if (activeCount < maxObstaclesPerFloor && Random.value < obstacleSpawnChance)
+            if (obstaclesInPoint.Length > 0)
             {
-                obs.gameObject.SetActive(true);
+                // Elegimos al azar SOLO UNA de las rocas disponibles en este SpawnPoint
+                int randomIndex = Random.Range(0, obstaclesInPoint.Length);
+                obstaclesInPoint[randomIndex].gameObject.SetActive(true);
+
                 activeCount++;
             }
         }
     }
+}
 
-    void ClearAllObstacles(GameObject floor)
+void ClearAllObstacles(GameObject floor)
+{
+    // Apaga todas las rocas del piso
+    Obstacle[] allObstacles = floor.GetComponentsInChildren<Obstacle>(true);
+    foreach (Obstacle obs in allObstacles)
     {
-        Obstacle[] obstacles = floor.GetComponentsInChildren<Obstacle>(true);
-        foreach (Obstacle obs in obstacles)
-        {
-            obs.gameObject.SetActive(false);
-        }
+        obs.gameObject.SetActive(false);
     }
+}
 
-    // Metodo para calcular la probabilidad dinamica en base a la distancia/puntos
     float GetCurrentObstacleChance(float currentDistance)
     {
-        // Aumenta la probabilidad un 5% por cada 100 metros recorridos
         float extraChance = (currentDistance / 100f) * 0.05f; 
         return Mathf.Min(baseObstacleChance + extraChance, maxObstacleChance);
-    }
-
-    // Al momento de instanciar las rocas en cada bloque de suelo:
-    void SpawnObstaclesOnFloor(GameObject floorBlock)
-    {
-        float currentChance = GetCurrentObstacleChance(playerTransform.position.x);
-
-        // Si el numero aleatorio es menor a la probabilidad dinamica, activa la roca
-        if (Random.value <= currentChance)
-        {
-            // Activar objeto de la roca en los puntos de control del suelo 
-        }
     }
 }
