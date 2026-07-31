@@ -15,9 +15,13 @@ public class Obstacle : MonoBehaviour
             // SI ES ROCA DE ESPINAS / TRAMPA:
             if (isSpikeObstacle)
             {
-                Debug.Log("¡Golpeaste una Roca de Espinas! No se destruye con Dash.");
+                Debug.Log("¡Golpeaste una Roca de Espinas! Es indestructible.");
+                
+                // Aplica el frenado de velocidad
                 player.ApplySpeedPenalty(speedPenalty);
-                return;
+
+                
+                return; 
             }
 
             // SI ES ROCA NORMAL:
@@ -25,7 +29,7 @@ public class Obstacle : MonoBehaviour
             {
                 player.AddCanaEnergy(player.canaEnergyPerRock);
                 player.AddBonusPoints(500f);
-                gameObject.SetActive(false);
+                gameObject.SetActive(false); // Esta SI se destruye/desaparece
             }
             else
             {

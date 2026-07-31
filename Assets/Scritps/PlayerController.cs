@@ -12,6 +12,15 @@ public class PlayerController : MonoBehaviour
     public float minSpeed = 3f;          // Velocidad minima tras un choque
     public float recoveryRate = 2f;      // Tasa de recuperacion de velocidad por segundo
 
+    [Header("Jump Settings")]
+    public float jumpForce = 12f;          // Fuerza aplicada al saltar
+    public Transform groundCheck;          // Objeto hijo ubicado en los pies del personaje
+    public float groundCheckRadius = 0.2f; // Radio de la esfera de detección de suelo
+    public LayerMask groundLayer;          // Capa asignada a las plataformas de suelo
+    private int jumpCount = 0;             // Contador interno de saltos realizados
+    public int maxJumps = 2;               // Límite máximo para permitir Doble Salto
+    private bool isGrounded;               // Bandera que indica si el personaje toca el suelo
+
     [Header("Dash Settings")]
     public float dashForce = 15f;        // Impulso de fuerza al presionar Dash
     public float dashDuration = 0.3f;    // Duracion del estado de invulnerabilidad por Dash
@@ -37,10 +46,6 @@ public class PlayerController : MonoBehaviour
     public float speedIncreaseRate = 0.1f; // Cantidad de velocidad que aumenta por segundo de juego
     public float maxBaseSpeed = 20f;       // Velocidad base máxima a la que se puede llegar
 
-
-
-
-
     private Rigidbody2D rb;
 
     void Start()
@@ -65,6 +70,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Verificación de contacto con el suelo
+        if (groundCheck != null)
+        {
+            isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        }
+
+        // Si toca el suelo, se reinicia el contador de saltos
+        if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+
         // Incremento progresivo de la dificultad (Velocidad Base escala con el tiempo)
         if (baseSpeed < maxBaseSpeed)
         {
@@ -116,7 +133,17 @@ public class PlayerController : MonoBehaviour
         bool pressSpace = Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
         bool pressLeftClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
 
-        if (pressSpace || pressLeftClick) ExecuteDash();
+        // Espacio para SALTO / DOBLE SALTO
+        if (pressSpace)
+        {
+            ExecuteJump();
+        }
+
+        // Clic Izquierdo para DASH
+        if (pressLeftClick && !isDashing)
+        {
+            ExecuteDash();
+        }
 
         // Actualización de la interfaz gráfica
         if (uiManager != null)
@@ -124,6 +151,17 @@ public class PlayerController : MonoBehaviour
             uiManager.UpdateScore(currentScore);
             uiManager.UpdateSpeed(currentSpeed * 2.5f);
             uiManager.UpdateCanaBar(isCanaActive ? canaTimer : currentCanaEnergy, isCanaActive ? canaDuration : maxCanaEnergy, isCanaActive);
+        }
+    }
+
+    // Ejecuta el impulso del Salto / Doble Salto
+    void ExecuteJump()
+    {
+        if (jumpCount < maxJumps)
+        {
+            // Resetea la velocidad vertical para garantizar la misma altura en el segundo salto
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            jumpCount++;
         }
     }
 
@@ -177,6 +215,9 @@ public class PlayerController : MonoBehaviour
         if (isDashing || isCanaActive) return;
 
         currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
+
+        // RESET DE SALTO: Al chocar con espinas en el suelo, permitimos que pueda saltar de inmediato
+        jumpCount = 0; 
     }
 
     // Metodos publicos para consultar estados desde otros scripts
@@ -187,5 +228,15 @@ public class PlayerController : MonoBehaviour
     public float GetCurrentScore()
     {
         return currentScore;
+    }
+
+    // Dibujado visual del gizmo en el editor para verificar la zona de pies
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }
