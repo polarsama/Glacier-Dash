@@ -65,18 +65,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-            // 1. Incremento progresivo de la dificultad (Velocidad Base escala con el tiempo)
+        // Incremento progresivo de la dificultad (Velocidad Base escala con el tiempo)
         if (baseSpeed < maxBaseSpeed)
         {
             baseSpeed += speedIncreaseRate * Time.deltaTime;
             baseSpeed = Mathf.Min(baseSpeed, maxBaseSpeed);
         }
 
-        // 2. Acumulación progresiva de puntos por tiempo
+        // Acumulación progresiva de puntos por tiempo
         currentScore += pointsPerSecond * Time.deltaTime;
         int currentScoreInt = Mathf.FloorToInt(currentScore);
 
-        // 3. Verificación y guardado automático de récord
+        // Verificación y guardado automático de récord
         if (currentScoreInt > highScore)
         {
             highScore = currentScoreInt;
@@ -84,14 +84,14 @@ public class PlayerController : MonoBehaviour
             if (uiManager != null) uiManager.UpdateHighScore(highScore);
         }
 
-        // 4. Temporizador de Dash
+        // Temporizador de Dash
         if (isDashing)
         {
             dashTimer -= Time.deltaTime;
             if (dashTimer <= 0f) isDashing = false;
         }
 
-        // 5. Temporizador de Modo Caña y recuperación de velocidad
+        // Temporizador de Modo Caña y recuperación de velocidad
         if (isCanaActive)
         {
             canaTimer -= Time.deltaTime;

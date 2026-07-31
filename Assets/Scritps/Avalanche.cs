@@ -35,10 +35,10 @@ public class Avalanche : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // 1. Calcular distancia actual entre el oso y la avalancha
+        // Calcular distancia actual entre el oso y la avalancha
         float currentDistance = playerTransform.position.x - transform.position.x;
 
-        // 2. Si el jugador está más lejos que la distancia objetivo, aumentar velocidad
+        // Si el jugador está más lejos que la distancia objetivo, aumentar velocidad
         if (currentDistance > targetDistance)
         {
             // La velocidad escala proporcionalmente a la distancia de ventaja que lleva el jugador
@@ -52,7 +52,7 @@ public class Avalanche : MonoBehaviour
             currentSpeed = baseSpeed;
         }
 
-        // 3. Movimiento lineal constante hacia la derecha
+        // Movimiento lineal constante hacia la derecha
         transform.Translate(Vector3.right * currentSpeed * Time.deltaTime);
 
         // Incrementa la velocidad base de la avalancha gradualmente con el tiempo

@@ -30,7 +30,7 @@ public class FallingObstacle : MonoBehaviour
 
         if (player != null)
         {
-            // Caso A: El jugador esta en Dash o Modo Caña -> destruye el hielo y da premio
+            // El jugador esta en Dash o Modo Caña -> destruye el hielo y da premio
             if (player.IsDashing() || player.IsCanaActive())
             {
                 Debug.Log("¡Destruiste el hielo cayendo con Dash!");
@@ -38,7 +38,7 @@ public class FallingObstacle : MonoBehaviour
                 player.AddBonusPoints(rockBonusPoints);
                 Destroy(gameObject);
             }
-            // Caso B: El jugador esta en estado normal -> recibe el golpe y pierde velocidad
+            // El jugador esta en estado normal -> recibe el golpe y pierde velocidad
             else
             {
                 Debug.Log("¡El hielo te golpeo! Aplicando castigo de velocidad.");

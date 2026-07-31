@@ -68,13 +68,13 @@ public class LevelGenerator : MonoBehaviour
     {
         GameObject floorToMove = floorPool[oldestFloorIndex];
 
-        // 1. Teletransportamos el tramo de suelo a la nueva posicion X
+        // Teletransportamos el tramo de suelo a la nueva posicion X
         floorToMove.transform.position = new Vector3(nextSpawnX, -3f, 0f);
 
-        // 2. Aleatorizamos cuales rocas se activan en esta nueva vuelta
+        // Aleatorizamos cuales rocas se activan en esta nueva vuelta
         RandomizeObstaclesInFloor(floorToMove);
 
-        // 3. Avanzamos X e indice circular
+        // Avanzamos X e indice circular
         nextSpawnX += floorWidth;
         oldestFloorIndex = (oldestFloorIndex + 1) % totalPoolSize;
     }
