@@ -1320,7 +1320,7 @@ MonoBehaviour:
   minSpawnInterval: 3
   maxSpawnInterval: 6
   spawnHeight: 8
-  leadDistance: 5
+  leadDistance: 6
 --- !u!4 &1388957128
 Transform:
   m_ObjectHideFlags: 0
@@ -1330,7 +1330,7 @@ Transform:
   m_GameObject: {fileID: 1388957126}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -3.04583, y: 1.65389, z: 0}
+  m_LocalPosition: {x: 7.68, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
