@@ -20,7 +20,7 @@ public class Obstacle : MonoBehaviour
                 // Aplica el frenado de velocidad
                 player.ApplySpeedPenalty(speedPenalty);
 
-                
+                // IMPORTANTE: NO se usa SetActive(false) ni Destroy. La roca se queda en el mapa.
                 return; 
             }
 
