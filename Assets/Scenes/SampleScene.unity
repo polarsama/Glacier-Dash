@@ -506,7 +506,7 @@ Transform:
   m_GameObject: {fileID: 551564683}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.494, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.9999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1040,7 +1040,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &881366931
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1145,14 +1145,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881366929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 551564684}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &881366934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1170,13 +1170,13 @@ MonoBehaviour:
   currentSpeed: 0
   minSpeed: 3
   recoveryRate: 2
-  jumpForce: 5
+  jumpForce: 10
   groundCheck: {fileID: 551564684}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  maxJumps: 1
+  maxJumps: 2
   dashForce: 50
   dashDuration: 0.7
   currentCanaEnergy: 0
