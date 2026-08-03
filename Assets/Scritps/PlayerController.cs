@@ -219,7 +219,7 @@ public class PlayerController : MonoBehaviour
         // RESET DE SALTO: Al chocar con espinas en el suelo, permitimos que pueda saltar de inmediato
         jumpCount = 0; 
     }
-    
+
     // Aplica frenado directo sin importar si esta usando Dash (exclusivo para trampas/espinas)
     public void ApplyDirectSpeedPenalty(float penaltyAmount)
     {
