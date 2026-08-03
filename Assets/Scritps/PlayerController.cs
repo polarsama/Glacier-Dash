@@ -217,14 +217,20 @@ public class PlayerController : MonoBehaviour
         currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
 
         // RESET DE SALTO: Al chocar con espinas en el suelo, permitimos que pueda saltar de inmediato
-        jumpCount = 0;
+        jumpCount = 0; 
+    }
+    
+    // Aplica frenado directo sin importar si esta usando Dash (exclusivo para trampas/espinas)
+    public void ApplyDirectSpeedPenalty(float penaltyAmount)
+    {
+        // Si esta en Modo Caña, no recibe castigo
+        if (isCanaActive) return;
 
-        // EFECTO VISUAL: Sacudida de cámara por impacto y penalización de velocidad
-        CamController cam = Camera.main.GetComponent<CamController>();
-        if (cam != null)
-        {
-            cam.TriggerShake(0.25f, 0.35f); // 0.25 segundos de duración con una intensidad de 0.35
-        }
+        // Reduce la velocidad respetando el mínimo
+        currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
+
+        // Reinicia los saltos para que pueda saltar de inmediato tras el impacto
+        jumpCount = 0;
     }
 
     // Metodos publicos para consultar estados desde otros scripts
