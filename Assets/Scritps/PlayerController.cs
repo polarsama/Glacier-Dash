@@ -217,7 +217,14 @@ public class PlayerController : MonoBehaviour
         currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
 
         // RESET DE SALTO: Al chocar con espinas en el suelo, permitimos que pueda saltar de inmediato
-        jumpCount = 0; 
+        jumpCount = 0;
+
+        // EFECTO VISUAL: Sacudida de cámara por impacto y penalización de velocidad
+        CamController cam = Camera.main.GetComponent<CamController>();
+        if (cam != null)
+        {
+            cam.TriggerShake(0.25f, 0.35f); // 0.25 segundos de duración con una intensidad de 0.35
+        }
     }
 
     // Metodos publicos para consultar estados desde otros scripts
