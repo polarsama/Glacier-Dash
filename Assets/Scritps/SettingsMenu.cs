@@ -14,7 +14,6 @@ public class SettingsMenu : MonoBehaviour
 
     [Header("Sub-Panels")]
     public GameObject controlsSubPanel;     // Panel para ver los controles / teclas
-    public GameObject creditsSubPanel;      // Panel para ver los créditos
 
     void Start()
     {
@@ -37,22 +36,16 @@ public class SettingsMenu : MonoBehaviour
     {
         if (mainSettingsPanel != null) mainSettingsPanel.SetActive(false);
         if (controlsSubPanel != null) controlsSubPanel.SetActive(true);
-        if (creditsSubPanel != null) creditsSubPanel.SetActive(false);
+
     }
 
-    // Muestra la sección de créditos y oculta el menú principal de ajustes
-    public void ShowCredits()
-    {
-        if (mainSettingsPanel != null) mainSettingsPanel.SetActive(false);
-        if (controlsSubPanel != null) controlsSubPanel.SetActive(false);
-        if (creditsSubPanel != null) creditsSubPanel.SetActive(true);
-    }
+
 
     // Botón "Back" dentro de Controles o Créditos: Regresa al menú principal de Ajustes
     public void BackToMainSettings()
     {
         if (mainSettingsPanel != null) mainSettingsPanel.SetActive(true);
         if (controlsSubPanel != null) controlsSubPanel.SetActive(false);
-        if (creditsSubPanel != null) creditsSubPanel.SetActive(false);
+
     }
 }
