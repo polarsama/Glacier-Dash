@@ -6039,7 +6039,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Title
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1824206807
@@ -6568,7 +6568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47d807ad6d94da148ba5685fc8595e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsMenu
-  mainSettingsPanel: {fileID: 402458940}
+  mainSettingsButtons: {fileID: 0}
   controlsSubPanel: {fileID: 897539337}
   creditsSubPanel: {fileID: 741811109}
 --- !u!1 &2048876505

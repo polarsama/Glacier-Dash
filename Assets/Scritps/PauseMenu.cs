@@ -117,7 +117,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     // Restablece el tiempo y regresa a la pantalla del menú principal / título
-    public void GoToTitleScreen(string titleSceneName = "TitleScene")
+    public void GoToTitleScreen(string titleSceneName = "Title")
     {
         Time.timeScale = 1f; // Es crucial restablecer el tiempo antes de cambiar de escena
 

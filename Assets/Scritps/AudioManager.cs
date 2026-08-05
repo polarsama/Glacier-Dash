@@ -84,11 +84,12 @@ public class AudioManager : MonoBehaviour
     /// <summary>
     /// Detiene la música de fondo (Ideal para cuando el jugador muere/pierde).
     /// </summary>
-    public void StopBackgroundMusic()
+   public void StopBackgroundMusic()
     {
         if (musicSource != null)
         {
-            musicSource.Stop();
+            musicSource.Stop(); // Detiene la reproducción
+            musicSource.clip = null; // Remueve la pista para evitar que vuelva a sonar por loop o disparo automático
         }
     }
-}
+}   

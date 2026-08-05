@@ -16,35 +16,50 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        // Aseguramos que el tiempo corra a velocidad normal al estar en el menú principal
+        // 1. Restablecemos el tiempo a su velocidad normal al cargar la pantalla de inicio
         Time.timeScale = 1f;
 
-        // Aseguramos que los botones principales estén visibles y los ajustes ocultos
+        // 2. SILENCIO TOTAL: Garantizamos que la música y cualquier efecto de audio se detengan por completo
+        if (AudioManager.Instance != null)
+        {
+            // Llama a la función de detención en el AudioManager si este persiste entre escenas
+            AudioManager.Instance.StopBackgroundMusic();
+
+            // Limpia y detiene cualquier AudioSource adjunto al AudioManager
+            AudioSource audioSource = AudioManager.Instance.GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = null; // Remueve el clip para evitar autoreproducción
+            }
+        }
+
+        // 3. Estado inicial de la interfaz: botones principales visibles y panel de ajustes oculto
         if (mainButtonsPanel != null) mainButtonsPanel.SetActive(true);
         if (settingsPanel != null) settingsPanel.SetActive(false);
     }
 
-    // Botón "Star": Inicia la escena del juego
+    // Botón "Star": Carga e inicia la escena principal de juego
     public void StartGame()
     {
         SceneManager.LoadScene(gameSceneName);
     }
 
-    // Botón "Settings": Abre el panel de ajustes en la pantalla principal
+    // Botón "Settings": Oculta la vista principal del título y abre el menú de ajustes
     public void OpenSettings()
     {
         if (mainButtonsPanel != null) mainButtonsPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(true);
     }
 
-    // Botón "Back" dentro de Settings: Cierra ajustes y vuelve a los botones principales
+    // Botón "Back" dentro de Settings: Cierra ajustes y vuelve a los botones principales del título
     public void CloseSettings()
     {
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (mainButtonsPanel != null) mainButtonsPanel.SetActive(true);
     }
 
-    // Botón "Quit": Cierra la aplicación por completo
+    // Botón "Quit": Cierra la aplicación/ejecutable del juego
     public void QuitGame()
     {
         Debug.Log("Saliendo de Glacier Dash...");
