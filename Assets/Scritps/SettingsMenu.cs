@@ -1,51 +1,44 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Audio;
 
 public class SettingsMenu : MonoBehaviour
 {
-    [Header("Audio Settings")]
-    public AudioMixer masterAudioMixer;       
-    public Slider masterVolumeSlider;         
-
-    [Header("Main Settings Panel (Menu Principal de Ajustes)")]
-    public GameObject mainSettingsPanel;    // El panel principal con los botones "Controls", "Credits", "Volume"
+    [Header("Main Settings View")]
+    public GameObject mainSettingsButtons; // El contenedor con los botones "Controls", "Credits" y "Back to Pause"
 
     [Header("Sub-Panels")]
-    public GameObject controlsSubPanel;     // Panel para ver los controles / teclas
+    public GameObject controlsSubPanel;     // Panel visual de Controles
+    public GameObject creditsSubPanel;      // Panel visual de Créditos
 
-    void Start()
+    private void OnEnable()
     {
-        // Inicializar el valor del slider si existe
-        if (masterVolumeSlider != null)
-        {
-            masterVolumeSlider.value = AudioListener.volume;
-            masterVolumeSlider.onValueChanged.AddListener(SetVolume);
-        }
+        // Cada vez que se active este panel, asegura mostrar el menú principal de Ajustes y ocultar subpaneles
+        OpenMainSettings();
     }
 
-    // Cambia el volumen global del juego
-    public void SetVolume(float volume)
+    public void OpenMainSettings()
     {
-        AudioListener.volume = volume; 
+        if (mainSettingsButtons != null) mainSettingsButtons.SetActive(true);
+        if (controlsSubPanel != null) controlsSubPanel.SetActive(false);
+        if (creditsSubPanel != null) creditsSubPanel.SetActive(false);
     }
 
-    // Muestra la sección de controles y oculta el menú principal de ajustes
     public void ShowControls()
     {
-        if (mainSettingsPanel != null) mainSettingsPanel.SetActive(false);
+        if (mainSettingsButtons != null) mainSettingsButtons.SetActive(false);
         if (controlsSubPanel != null) controlsSubPanel.SetActive(true);
-
+        if (creditsSubPanel != null) creditsSubPanel.SetActive(false);
     }
 
+    public void ShowCredits()
+    {
+        if (mainSettingsButtons != null) mainSettingsButtons.SetActive(false);
+        if (controlsSubPanel != null) controlsSubPanel.SetActive(false);
+        if (creditsSubPanel != null) creditsSubPanel.SetActive(true);
+    }
 
-
-    // Botón "Back" dentro de Controles o Créditos: Regresa al menú principal de Ajustes
+    // Usar este método exclusivamente en los botones "Back" DENTRO de Controles y Créditos
     public void BackToMainSettings()
     {
-        if (mainSettingsPanel != null) mainSettingsPanel.SetActive(true);
-        if (controlsSubPanel != null) controlsSubPanel.SetActive(false);
-
+        OpenMainSettings();
     }
 }
