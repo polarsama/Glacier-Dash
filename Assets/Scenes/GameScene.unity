@@ -310,6 +310,7 @@ RectTransform:
   - {fileID: 2060681221}
   - {fileID: 856130425}
   - {fileID: 1040635049}
+  - {fileID: 221851711}
   - {fileID: 403385230}
   - {fileID: 1497319869}
   - {fileID: 301137300}
@@ -385,7 +386,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1497319869}
+  m_Father: {fileID: 185080328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1103,7 +1104,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.9
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3604,7 +3605,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.7
+  m_Volume: 1
   m_Pitch: 0.62
   Loop: 0
   Mute: 0
@@ -4830,7 +4831,6 @@ RectTransform:
   m_Children:
   - {fileID: 1476078617}
   - {fileID: 585861545}
-  - {fileID: 221851711}
   m_Father: {fileID: 185080328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
