@@ -20,14 +20,20 @@ public class Obstacle : MonoBehaviour
                 // Si está en Modo Caña (invencible total), ignora las espinas
                 if (player.IsCanaActive()) return;
 
-                // Forzamos la penalización de velocidad (incluso si está en Dash)
+                // Forzamos la penalización de velocidad en el jugador
                 player.ApplyDirectSpeedPenalty(speedPenalty);
 
-                // Disparamos el temblor de cámara directamente
+                // Disparamos el temblor de cámara
                 CamController cam = Camera.main.GetComponent<CamController>();
                 if (cam != null)
                 {
-                    cam.TriggerShake(0.3f, 0.45f); // 0.3 segundos de duración con buena intensidad
+                    cam.TriggerShake(0.3f, 0.45f);
+                }
+
+                // EFECTO DE SONIDO: Reproduce el golpe de penalización al impactar las espinas
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.penaltySFX);
                 }
 
                 return; 
@@ -38,7 +44,14 @@ public class Obstacle : MonoBehaviour
             {
                 player.AddCanaEnergy(player.canaEnergyPerRock);
                 player.AddBonusPoints(500f);
-                gameObject.SetActive(false); // Esta SI se destruye con Dash
+
+                // Efecto de sonido: Romper roca con Dash o Modo Caña
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.rockBreakSFX);
+                }
+
+                gameObject.SetActive(false); 
             }
             else
             {

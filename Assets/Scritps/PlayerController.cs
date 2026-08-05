@@ -46,6 +46,11 @@ public class PlayerController : MonoBehaviour
     public float speedIncreaseRate = 0.1f; // Cantidad de velocidad que aumenta por segundo de juego
     public float maxBaseSpeed = 20f;       // Velocidad base máxima a la que se puede llegar
 
+    [Header("Cana Mode Visual FX")]
+    public SpriteRenderer playerSprite;
+    public Color canaModeColor = new Color(1f, 0.85f, 0.2f, 1f); // Color dorado/brillante
+    private Color originalColor;
+
     private Rigidbody2D rb;
 
     void Start()
@@ -65,6 +70,12 @@ public class PlayerController : MonoBehaviour
         if (uiManager != null)
         {
             uiManager.UpdateHighScore(highScore);
+        }
+
+        // Guardamos el color original del sprite
+        if (playerSprite != null)
+        {
+            originalColor = playerSprite.color;
         }
     }
 
@@ -199,6 +210,32 @@ public class PlayerController : MonoBehaviour
         currentCanaEnergy = 0f;
         currentSpeed = baseSpeed * 1.8f; // Aumento de velocidad
         AddBonusPoints(canaActivationBonus); // Bono especial de puntos
+
+        // Cambio de color del personaje
+        if (playerSprite != null)
+        {
+            playerSprite.color = canaModeColor;
+        }
+
+        // Texto flotante de UI ("¡MODO CAÑA!") actualizado a FindAnyObjectByType para evitar warnings
+        CanaModeUI ui = FindAnyObjectByType<CanaModeUI>();
+        if (ui != null)
+        {
+            ui.ShowCanaText();
+        }
+
+        // Impacto visual en cámara
+        CamController cam = Camera.main.GetComponent<CamController>();
+        if (cam != null)
+        {
+            cam.TriggerShake(0.35f, 0.45f);
+        }
+
+        // Efecto de sonido: Activación de Modo Caña
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.canaActivateSFX);
+        }
     }
 
     // Desactiva el Modo Caña y vuelve a velocidad normal
@@ -206,18 +243,34 @@ public class PlayerController : MonoBehaviour
     {
         isCanaActive = false;
         currentSpeed = baseSpeed;
+
+        // Restaurar color original del personaje
+        if (playerSprite != null)
+        {
+            playerSprite.color = originalColor;
+        }
     }
 
-    // Aplica frenado al chocar contra una roca
+   // Aplica frenado al chocar contra una roca o trampa
     public void ApplySpeedPenalty(float penaltyAmount)
     {
-        // Si esta en Dash o Modo Caña, no recibe castigo
-        if (isDashing || isCanaActive) return;
+        if (isCanaActive) return;
 
         currentSpeed = Mathf.Max(minSpeed, currentSpeed - penaltyAmount);
+        jumpCount = 0;
 
-        // RESET DE SALTO: Al chocar con espinas en el suelo, permitimos que pueda saltar de inmediato
-        jumpCount = 0; 
+        // EFECTO VISUAL: Sacudida de cámara
+        CamController cam = Camera.main.GetComponent<CamController>();
+        if (cam != null)
+        {
+            cam.TriggerShake(0.25f, 0.35f);
+        }
+    
+        // EFECTO DE SONIDO: Penalización / Choque con espinas
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.penaltySFX);
+        }
     }
 
     // Aplica frenado directo sin importar si esta usando Dash (exclusivo para trampas/espinas)

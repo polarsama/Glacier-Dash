@@ -75,6 +75,12 @@ public class UIManager : MonoBehaviour
             finalScoreText.text = "Game Over: " +"\n" + "Final Score: " + Mathf.FloorToInt(finalScore).ToString();
         }
 
+        // 🛑 DETENER LA MÚSICA SÍ O SÍ AL MORIR
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopBackgroundMusic();
+        }
+
         Time.timeScale = 0f; // Detiene el tiempo del juego totalmente
     }
 
@@ -82,6 +88,13 @@ public class UIManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f; // Reestablece la velocidad del tiempo antes de recargar
+
+        // 🎵 REINICIAR LA MÚSICA DESDE CERO AL RECARGAR
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayBackgroundMusic();
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Recarga la escena actual
     }
 }
